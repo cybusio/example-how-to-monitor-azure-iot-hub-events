@@ -1,0 +1,90 @@
+[
+    {
+        "id": "8d47e1b9.1db9d",
+        "type": "tab",
+        "label": "Test Flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "fd4f6dc3.ff55b",
+        "type": "mqtt out",
+        "z": "8d47e1b9.1db9d",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "26f4ed38.5f5b42",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d0aec5c3.171558",
+        "type": "inject",
+        "z": "8d47e1b9.1db9d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test/deviceEvent",
+        "payload": "{\"DeviceData\":{\"Temperature\":78.567,\"Position\":{\"X\":35.02,\"Y\":12.62,\"Z\":3.45},\"Status\":\"operational\"}}",
+        "payloadType": "json",
+        "x": 430,
+        "y": 380,
+        "wires": [
+            [
+                "fd4f6dc3.ff55b",
+                "e507208f.e07d9"
+            ]
+        ]
+    },
+    {
+        "id": "e507208f.e07d9",
+        "type": "debug",
+        "z": "8d47e1b9.1db9d",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "26f4ed38.5f5b42",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "connectware broker",
+        "broker": "172.17.0.1",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
