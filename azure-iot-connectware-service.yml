@@ -1,0 +1,96 @@
+---
+description: >
+  Cybus Connectware to Azure IoT
+
+metadata:
+  name: AzureIoT Test
+  version: 1.0.0
+  icon: https://www.cybus.io/wp-content/uploads/2019/03/Cybus-logo-Claim-lang.svg
+  provider: cybus
+  homepage: https://www.cybus.io
+
+parameters:
+  Azure_Iot_Hub_Connection_String:
+    type: string
+    default: <AzureIotHub-DeviceConnectionString>
+
+  logLevelAzureIoTConnector:
+    type: string
+    description: >-
+      Sets the log level for the Azure IoT connector service.
+    default: info
+    enum:
+      - error
+      - warn
+      - info
+      - debug
+      - trace
+
+resources:
+  sourceTargetMapping:
+    type: Cybus::Mapping
+    properties:
+      mappings:
+        - subscribe:
+            topic: "test/deviceEvent"
+          publish:
+            topic: "test/AzureIoT"
+          rules:
+            - transform:
+                expression: |
+                  (
+                    {
+                      "deviceId": "TestDevice",
+                      "payload": DeviceData
+                    }
+                  )
+
+  azureIoTConnector:
+    type: Cybus::Container
+    properties:
+      image: registry.cybus.io/cybus-services/azure-iot-connector:0.0.7
+      environment:
+        LOG_LEVEL: !ref logLevelAzureIoTConnector
+        CONNECTOR_CONFIG: !sub |
+          {
+            "general": {
+              "name": "Azure Connector"
+            },
+            "source": {
+              "driver": "azure.iot",
+              "connection": {
+                "connectionString": "${Azure_Iot_Hub_Connection_String}"
+              },
+              "defaults": {
+                "operation": "write"
+              }
+            },
+            "target": {
+              "driver": "mqtt",
+              "connection": {
+                "protocol": "mqtt",
+                "host": "${Cybus::MqttHost}",
+                "port": ${Cybus::MqttPort},
+                "username": "admin",
+                "password": "admin"
+              },
+              "defaults": {
+                "operation": "subscribe"
+              }
+            },
+            "mappings": [
+              {
+                "source": {
+                  "name": "TestPayload",
+                  "type": "telemetry",
+                  "properties": {
+                    "default": false,
+                    "route": "storage"
+                  }
+                },
+                "target": {
+                  "topic": "test/AzureIoT"
+                }
+              }
+            ]
+          }
